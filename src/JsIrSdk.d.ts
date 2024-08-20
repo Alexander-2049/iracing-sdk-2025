@@ -12,10 +12,10 @@ import {
 
 declare interface Telemetry {
   timestamp: string;
-  values: Values;
+  values: TelemetryValues;
 }
 
-declare interface Values {
+declare interface TelemetryValues {
   SessionTime: number;
   SessionTick: number;
   SessionNum: number;
@@ -3273,10 +3273,10 @@ declare interface RfshockVelSt {
 
 declare interface SessionInfo {
   timestamp: string;
-  data: Data;
+  data: SessionInfoData;
 }
 
-declare interface Data {
+declare interface SessionInfoData {
   WeekendInfo: WeekendInfo;
   SessionInfo: SessionInfo;
   CameraInfo: CameraInfo;
@@ -3714,25 +3714,35 @@ declare interface RearDampers {
 }
 
 interface TelemetryEvent {
-  speed: number;
-  rpm: number;
+  type: "TelemetryEvent";
+  data: TelemetryValues;
+  timestamp: Date;
+}
+
+interface TelemetryDescriptionEvent {
+  type: "TelemetryDescription";
+  data: TelemetryDescription;
+  timestamp: Date;
 }
 
 interface SessionInfoEvent {
-  sessionTime: string;
-  sessionLaps: number;
+  type: "SessionInfo";
+  data: SessionInfoData;
+  timestamp: Date;
 }
 
 interface ConnectedEvent {
-  status: string;
+  type: "Connected";
+  timestamp: Date;
 }
 
 interface DisconnectedEvent {
-  reason: string;
+  type: "Disconnected";
+  timestamp: Date;
 }
 
 interface IRacingEventMap {
-  TelemetryDescription: string;
+  TelemetryDescription: TelemetryDescriptionEvent;
   Telemetry: TelemetryEvent;
   SessionInfo: SessionInfoEvent;
   Connected: ConnectedEvent;
