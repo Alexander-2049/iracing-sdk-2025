@@ -3713,6 +3713,32 @@ declare interface RearDampers {
   HighSpeedReboundDamping: string;
 }
 
+interface TelemetryEvent {
+  speed: number;
+  rpm: number;
+}
+
+interface SessionInfoEvent {
+  sessionTime: string;
+  sessionLaps: number;
+}
+
+interface ConnectedEvent {
+  status: string;
+}
+
+interface DisconnectedEvent {
+  reason: string;
+}
+
+interface IRacingEventMap {
+  TelemetryDescription: string;
+  Telemetry: TelemetryEvent;
+  SessionInfo: SessionInfoEvent;
+  Connected: ConnectedEvent;
+  Disconnected: DisconnectedEvent;
+}
+
 declare class JsIrSdk extends EventEmitter {
   constructor(
     IrSdkWrapper: any,
@@ -3723,18 +3749,13 @@ declare class JsIrSdk extends EventEmitter {
     }
   );
 
-  /**
-   * Execute any of available commands, excl. FFB command
-   * @param msgId Message id
-   * @param arg1 1st argument
-   * @param arg2 2nd argument
-   * @param arg3 3rd argument
-   */
+  on<K extends keyof IRacingEventMap>(
+    event: K,
+    listener: (event: IRacingEventMap[K]) => void
+  ): this;
+
   execCmd(msgId: number, arg1?: number, arg2?: number, arg3?: number): void;
 
-  /**
-   * iRacing SDK related constants
-   */
   Consts: {
     BroadcastMsg: typeof BroadcastMsg;
     CameraState: typeof CameraState;
@@ -3747,30 +3768,12 @@ declare class JsIrSdk extends EventEmitter {
   };
 
   camControls: {
-    /**
-     * Change camera tool state
-     * @param state new state
-     */
     setState(state: CameraState): void;
-
-    /**
-     * Switch camera, focus on car
-     * @param carNum Car to focus on
-     * @param camGroupNum Select camera group
-     * @param camNum Select camera
-     */
     switchToCar(
       carNum: number | string,
       camGroupNum?: number,
       camNum?: number
     ): void;
-
-    /**
-     * Switch camera, focus on position
-     * @param position Position to focus on
-     * @param camGroupNum Select camera group
-     * @param camNum Select camera
-     */
     switchToPos(
       position: number | string,
       camGroupNum?: number,
@@ -3801,9 +3804,6 @@ declare class JsIrSdk extends EventEmitter {
   telemetryDescription: TelemetryDescription | null;
   sessionInfo: SessionInfo | null;
 
-  /**
-   * Stops JsIrSdk, no new events are fired after calling this
-   */
   _stop(): void;
 }
 
