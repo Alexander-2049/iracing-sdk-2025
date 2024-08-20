@@ -1,4 +1,4 @@
-import JsIrSdk from "./JsIrSdk";
+import { JsIrSdk } from "./JsIrSdk";
 
 declare namespace irsdk {
   /**

@@ -10,12 +10,12 @@ import {
   ReloadTexturesMode,
 } from "./IrSdkConsts";
 
-declare interface Telemetry {
+export declare interface Telemetry {
   timestamp: string;
   values: TelemetryValues;
 }
 
-declare interface TelemetryValues {
+export declare interface TelemetryValues {
   SessionTime: number;
   SessionTick: number;
   SessionNum: number;
@@ -3271,12 +3271,12 @@ declare interface RfshockVelSt {
   type: string;
 }
 
-declare interface SessionInfo {
+export declare interface SessionInfo {
   timestamp: string;
   data: SessionInfoData;
 }
 
-declare interface SessionInfoData {
+export declare interface SessionInfoData {
   WeekendInfo: WeekendInfo;
   SessionInfo: SessionInfo;
   CameraInfo: CameraInfo;
@@ -3376,10 +3376,6 @@ declare interface WeekendOptions {
 
 declare interface TelemetryOptions {
   TelemetryDiskFile: string;
-}
-
-declare interface SessionInfo {
-  Sessions: Session[];
 }
 
 declare interface Session {
@@ -3749,7 +3745,7 @@ interface IRacingEventMap {
   Disconnected: DisconnectedEvent;
 }
 
-declare class JsIrSdk extends EventEmitter {
+export declare class JsIrSdk extends EventEmitter {
   constructor(
     IrSdkWrapper: any,
     opts?: {
@@ -3816,5 +3812,3 @@ declare class JsIrSdk extends EventEmitter {
 
   _stop(): void;
 }
-
-export = JsIrSdk;
