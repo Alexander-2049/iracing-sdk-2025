@@ -458,7 +458,7 @@ function JsIrSdk (IrSdkWrapper, opts) {
         self.emit('SessionInfo', {timestamp, data})
         break
       case 'Telemetry':
-        self.emit('Telemetry', {timestamp, values: data})
+        self.emit('Telemetry', {timestamp, data})
         break
       case 'TelemetryDescription':
         self.emit('TelemetryDescription', data)
