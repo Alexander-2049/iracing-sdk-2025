@@ -3710,7 +3710,7 @@ declare interface RearDampers {
 }
 
 interface TelemetryEvent {
-  type: "TelemetryEvent";
+  type: "Telemetry";
   data: TelemetryValues;
   timestamp: Date;
 }
