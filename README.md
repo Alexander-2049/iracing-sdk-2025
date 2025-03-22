@@ -1,4 +1,4 @@
-# node-irsdk-2023
+# iracing-sdk-2025
 
 Unofficial [iRacing](http://www.iracing.com/) SDK implementation for NodeJS.
 
