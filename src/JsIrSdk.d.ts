@@ -3271,9 +3271,14 @@ declare interface RfshockVelSt {
   type: string;
 }
 
-export declare interface SessionInfo {
+export declare interface SessionInfoMessage {
   timestamp: string;
   data: SessionInfoData;
+}
+
+export declare interface SessionInfo {
+  Sessions: Session[];
+  CurrentSessionNum: number;
 }
 
 export declare interface SessionInfoData {
