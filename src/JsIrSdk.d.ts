@@ -3816,4 +3816,10 @@ export declare class JsIrSdk extends EventEmitter {
   sessionInfo: SessionInfo | null;
 
   _stop(): void;
+  pause(): void;
+  resume(): void;
+  changeInterval(intervals: {
+    telemetryUpdateInterval?: number;
+    sessionInfoUpdateInterval?: number;
+  }): void;
 }
