@@ -500,6 +500,11 @@ function JsIrSdk(IrSdkWrapper, opts) {
   });
 
   /**
+    @type {Boolean}
+  */
+  this.isDown = false;
+
+  /**
     Stops JsIrSdk, no new events are fired after calling this
     @method
     @private
@@ -509,6 +514,7 @@ function JsIrSdk(IrSdkWrapper, opts) {
     clearInterval(sessionInfoIntervalId);
     clearInterval(startIntervalId);
     IrSdkWrapper.shutdown();
+    this.isDown = true;
   };
 
   /** pad car number

@@ -3760,6 +3760,8 @@ export declare class JsIrSdk extends EventEmitter {
     }
   );
 
+  public isDown: boolean;
+
   on<K extends keyof IRacingEventMap>(
     event: K,
     listener: (event: IRacingEventMap[K]) => void
