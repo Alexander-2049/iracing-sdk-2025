@@ -486,6 +486,114 @@ function JsIrSdk (IrSdkWrapper, opts) {
     IrSdkWrapper.shutdown()
   }
 
+  /**
+    Pauses all update intervals (telemetry and session info).
+    @method
+    @example iracing.pause()
+  */
+  this.pause = function () {
+    clearInterval(telemetryIntervalId)
+    clearInterval(sessionInfoIntervalId)
+  }
+
+  /**
+    Resumes all update intervals (telemetry and session info).
+    @method
+    @example iracing.resume()
+  */
+  this.resume = function () {
+    if (!telemetryIntervalId) {
+      telemetryIntervalId = setInterval(function () {
+        checkConnection()
+        if (connected && IrSdkWrapper.updateTelemetry()) {
+          var now = new Date()
+          self.telemetry = IrSdkWrapper.getTelemetry()
+          self.telemetry.timestamp = now
+          setImmediate(function () {
+            if (!self.telemetryDescription) {
+              self.telemetryDescription = IrSdkWrapper.getTelemetryDescription()
+              self.emit('update', {type: 'TelemetryDescription', data: self.telemetryDescription, timestamp: now})
+            }
+            self.emit('update', {type: 'Telemetry', data: self.telemetry.values, timestamp: now})
+          })
+        }
+      }, opts.telemetryUpdateInterval)
+    }
+    if (!sessionInfoIntervalId) {
+      sessionInfoIntervalId = setInterval(function () {
+        checkConnection()
+        if (connected && IrSdkWrapper.updateSessionInfo()) {
+          var now = new Date()
+          var sessionInfo = IrSdkWrapper.getSessionInfo()
+          var doc
+          setImmediate(function () {
+            try {
+              doc = parseSessionInfo(sessionInfo)
+            } catch (ex) {
+              console.error('js-irsdk: yaml error: \n' + ex)
+            }
+            if (doc) {
+              self.sessionInfo = { timestamp: now, data: doc }
+              self.emit('update', {type: 'SessionInfo', data: self.sessionInfo.data, timestamp: now})
+            }
+          })
+        }
+      }, opts.sessionInfoUpdateInterval)
+    }
+  }
+
+  /**
+    Changes the update interval for telemetry and/or session info.
+    @method
+    @param {Object} intervals { telemetryUpdateInterval, sessionInfoUpdateInterval }
+    @example iracing.changeInterval({ telemetryUpdateInterval: 100, sessionInfoUpdateInterval: 500 })
+  */
+  this.changeInterval = function (intervals) {
+    intervals = intervals || {}
+    if (typeof intervals.telemetryUpdateInterval === 'number') {
+      opts.telemetryUpdateInterval = intervals.telemetryUpdateInterval
+      clearInterval(telemetryIntervalId)
+      telemetryIntervalId = setInterval(function () {
+        checkConnection()
+        if (connected && IrSdkWrapper.updateTelemetry()) {
+          var now = new Date()
+          self.telemetry = IrSdkWrapper.getTelemetry()
+          self.telemetry.timestamp = now
+          setImmediate(function () {
+            if (!self.telemetryDescription) {
+              self.telemetryDescription = IrSdkWrapper.getTelemetryDescription()
+              self.emit('update', {type: 'TelemetryDescription', data: self.telemetryDescription, timestamp: now})
+            }
+            self.emit('update', {type: 'Telemetry', data: self.telemetry.values, timestamp: now})
+          })
+        }
+      }, opts.telemetryUpdateInterval)
+    }
+    if (typeof intervals.sessionInfoUpdateInterval === 'number') {
+      opts.sessionInfoUpdateInterval = intervals.sessionInfoUpdateInterval
+      clearInterval(sessionInfoIntervalId)
+      sessionInfoIntervalId = setInterval(function () {
+        checkConnection()
+        if (connected && IrSdkWrapper.updateSessionInfo()) {
+          var now = new Date()
+          var sessionInfo = IrSdkWrapper.getSessionInfo()
+          var doc
+          setImmediate(function () {
+            try {
+              doc = parseSessionInfo(sessionInfo)
+            } catch (ex) {
+              console.error('js-irsdk: yaml error: \n' + ex)
+            }
+            if (doc) {
+              self.sessionInfo = { timestamp: now, data: doc }
+              self.emit('update', {type: 'SessionInfo', data: self.sessionInfo.data, timestamp: now})
+            }
+          })
+        }
+      }, opts.sessionInfoUpdateInterval)
+    }
+  }
+
   /** pad car number
     @function
     @private
